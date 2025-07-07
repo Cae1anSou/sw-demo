@@ -44,7 +44,7 @@ os.makedirs(ELEMENTS_DIR, exist_ok=True)
 
 @app.get("/")
 async def root():
-    return {"message": "欢迎使用AI教学系统元素选择API"}
+    return {"message": "欢迎使用元素选择API"}
 
 @app.post("/api/element", response_model=Dict[str, Any])
 async def receive_element(info: ElementInfo):
