@@ -83,8 +83,11 @@ export function initIframeSelector(options: IframeSelectOptions = {}): () => voi
           selector.stop();
         }
         
+        // 类型守卫，确保message类型为SelectStartMessage
+        const startMessage = message as SelectStartMessage;
+        
         selector = new ElementSelector({
-          ignoreSelectors: message.ignore,
+          ignoreSelectors: startMessage.ignore,
           onElementSelected: (element, info) => {
             // 选中元素后，向父页面发送信息
             window.parent.postMessage({
@@ -166,7 +169,9 @@ export function createSelectorBridge(options: BridgeOptions) {
     
     // 处理元素选中消息
     if (message.type === MESSAGE_TYPES.CHOSEN && onChosen) {
-      onChosen(message.payload);
+      // 类型守卫，确保message类型为SelectChosenMessage
+      const chosenMessage = message as SelectChosenMessage;
+      onChosen(chosenMessage.payload);
     }
   };
   

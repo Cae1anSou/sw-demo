@@ -1,6 +1,11 @@
 import { getElementAtPoint, getElementInfo } from './utils';
 
 /**
+ * 最高层级常量，确保覆盖层和高亮层位于页面的最上层
+ */
+const MAX_Z_INDEX = 2147483646; // 最大安全整数 (2^31 - 2)
+
+/**
  * ElementSelector选项接口
  */
 export interface ElementSelectorOptions {
@@ -97,7 +102,7 @@ export class ElementSelector {
       width: '100vw',
       height: '100vh',
       backgroundColor: 'rgba(0, 0, 0, 0.01)',
-      zIndex: '9999',
+      zIndex: String(MAX_Z_INDEX),
       cursor: 'crosshair',
       pointerEvents: 'auto'
     });
@@ -125,7 +130,7 @@ export class ElementSelector {
       pointerEvents: 'none',
       border: '2px solid #0079d3',
       backgroundColor: 'rgba(0, 121, 211, 0.1)',
-      zIndex: '9998'
+      zIndex: String(MAX_Z_INDEX - 1)
     });
     
     document.body.appendChild(highlightEl);
@@ -178,26 +183,43 @@ export class ElementSelector {
   private handleMouseMove = (event: MouseEvent): void => {
     // 使用requestAnimationFrame优化性能，避免频繁DOM操作
     requestAnimationFrame(() => {
-      const target = event.target as HTMLElement;
+      // 先隐藏高亮层，以便获取下方真实元素
+      if (this.highlightEl && this.highlightEl.style.display !== 'none') {
+        this.highlightEl.style.display = 'none';
+      }
       
-      // 如果鼠标在选择器自身上，忽略
-      if (this.shouldIgnoreElement(target)) return;
-      
-      // 通过工具函数获取实际元素
+      // 通过工具函数获取实际元素，忽略选择器自身元素
       const refElement = getElementAtPoint(event.clientX, event.clientY);
-      if (this.shouldIgnoreElement(refElement)) return;
+      if (!refElement || this.shouldIgnoreElement(refElement)) {
+        this.hideHighlight();
+        return;
+      }
       
       // 与上次hover元素相同，不做处理
-      if (this.lastHoveredElement === refElement) return;
+      if (this.lastHoveredElement === refElement) {
+        // 确保高亮框显示
+        if (this.highlightEl && this.highlightEl.style.display === 'none') {
+          this.updateHighlight(refElement);
+        }
+        return;
+      }
       
-      this.lastHoveredElement = refElement;
-      
-      // 更新高亮框
-      this.updateHighlight(refElement);
-      
-      // 调用外部钩子
-      if (this.options.onElementHovered) {
-        this.options.onElementHovered(refElement);
+      // 更新最后悬停元素
+      if (this.lastHoveredElement !== refElement) {
+        // 如果有前一个悬停元素，触发unhover事件
+        if (this.lastHoveredElement && this.options.onElementUnhovered) {
+          this.options.onElementUnhovered();
+        }
+        
+        this.lastHoveredElement = refElement;
+        
+        // 更新高亮框
+        this.updateHighlight(refElement);
+        
+        // 调用外部钩子
+        if (this.options.onElementHovered) {
+          this.options.onElementHovered(refElement);
+        }
       }
     });
   };
