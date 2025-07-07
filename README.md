@@ -1,4 +1,4 @@
-# 网页元素选择模块
+# 元素选择模块
 
 这是一个基于TypeScript的元素选择模块，设计用于AI教学平台。该模块允许用户在教学网站内的嵌入式iframe中选择HTML元素，然后将选中元素的详细信息通过JSON格式发送到FastAPI后端进行处理。
 
@@ -7,6 +7,7 @@
 ```
 sw-demo/
 ├── select-module/       # 元素选择模块的核心代码
+│   ├── dist/            # 编译后的select模块
 │   ├── src/
 │   │   ├── utils.ts           # 工具函数，如getElementAtPoint等
 │   │   ├── element-selector.ts # 元素选择器类
