@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>高级元素选择器示例</title>
+  <title>select-demo-002</title>
   <!-- 内联 favicon，避免 /favicon.ico 404 -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='8' fill='%233498db'/%3E%3C/svg%3E">
   <style>
@@ -306,10 +306,8 @@
 <body>
   <header>
     <div class="container header-container">
-      <h1>元素选择器 - 高级示例</h1>
+      <h1>select-demo-002</h1>
       <div class="header-actions">
-        <button id="darkModeToggle" class="button button-secondary">切换暗色模式</button>
-        <button id="helpButton" class="button button-secondary">帮助</button>
       </div>
     </div>
   </header>
@@ -372,7 +370,7 @@
         </div>
         
         <div class="iframe-container">
-          <iframe id="previewFrame" class="preview-iframe" src="../main-site/example-page/index.html"></iframe>
+          <iframe id="previewFrame" class="preview-iframe" src="../example-page/index.html"></iframe>
         </div>
       </main>
     </div>
@@ -385,7 +383,7 @@
   <!-- 引入编译后的模块 -->
   <script type="module">
     // 导入模块
-    import { createSelectorBridge, initIframeSelector } from '../select-module/dist/index.js';
+    import { createSelectorBridge, initIframeSelector } from '../../select-module/dist/index.js';
     
     // 页面加载完成后执行
     document.addEventListener('DOMContentLoaded', function() {
@@ -469,10 +467,10 @@
         const target = targetSelector.value;
         switch (target) {
           case 'vue-demo':
-            previewFrame.src = '../main-site/example-page/index.html';
+            previewFrame.src = '../example-page/index.html';
             break;
           case 'react-demo':
-            previewFrame.src = '../main-site/example-page/index.html'; // 暂时使用相同的示例
+            previewFrame.src = '../index.html';
             break;
         }
       });
@@ -604,21 +602,11 @@
         statusBadge.style.display = 'inline-block';
       }
       
-      // 切换暗黑模式
-      darkModeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        // 这里可以添加暗黑模式的样式切换逻辑
-      });
-      
       // 预览框架加载完成后隐藏加载指示器
       previewFrame.addEventListener('load', function() {
         loadingIndicator.style.display = 'none';
       });
       
-      // 帮助按钮点击事件
-      document.getElementById('helpButton').addEventListener('click', function() {
-        alert('使用说明：\n\n1. 点击"开始选择"按钮启动选择器\n2. 在预览区域中移动鼠标并点击要选择的元素\n3. 选中的元素信息将显示在左侧面板\n4. 您可以查看元素的结构和属性\n5. 历史记录会保存最近5次选择');
-      });
     });
   </script>
 </body>

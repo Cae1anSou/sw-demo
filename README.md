@@ -1,4 +1,4 @@
-# AI教学平台 - 元素选择模块
+# 网页元素选择模块
 
 这是一个基于TypeScript的元素选择模块，设计用于AI教学平台。该模块允许用户在教学网站内的嵌入式iframe中选择HTML元素，然后将选中元素的详细信息通过JSON格式发送到FastAPI后端进行处理。
 
@@ -15,10 +15,12 @@ sw-demo/
 │   ├── package.json
 │   └── tsconfig.json
 ├── main-site/          # 模拟主站代码
-│   ├── index.html      # 主站页面，包含iframe和选择按钮
-│   └── example-page/   # 被嵌入的示例页面
-│       ├── index.html  # Vue示例页面
-│       └── styles.css  # 示例页面样式
+│   ├── index.html          # 旧版演示首页
+│   ├── demo-002/           # 新版元素选择器演示页面
+│   │   └── index.html
+│   └── example-page/       # 被嵌入的示例页面
+│       ├── index.html      # Vue示例页面
+│       └── styles.css      # 示例页面样式
 └── backend/           # FastAPI后端
     ├── main.py        # API实现
     └── requirements.txt # 依赖列表
@@ -36,16 +38,16 @@ sw-demo/
 ### 1. 安装依赖
 
 ```bash
-# 安装前端依赖
+# 安装前端依赖（构建完毕，不改TS代码的话这步可跳过）
 cd select-module
 npm install
 
-# 安装后端依赖
+# 安装后端依赖（这个没法跳过，git上传的时候忽略了这个）
 cd ../backend
 pip install -r requirements.txt
 ```
 
-### 2. 构建选择模块
+### 2. 构建选择模块（构建完毕，可跳过）
 
 ```bash
 cd select-module
@@ -56,7 +58,7 @@ npm run build
 
 ```bash
 cd backend
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000  # 必须是8000，因为我的示例里面写死了
 ```
 
 ### 4. 运行演示页面
@@ -64,17 +66,17 @@ uvicorn main:app --reload
 由于这是一个演示项目，您可以使用任何简单的HTTP服务器来提供静态文件：
 
 ```bash
-cd main-site
-python -m http.server 8080
+# 在项目根目录（sw-demo）启动
+python -m http.server 9000
 ```
 
-然后在浏览器中访问 `http://localhost:8080`
+然后在浏览器中访问 `http://localhost:9000/main-site/demo-002/`
 
 ## 使用说明
 
 ### 1. 在主站中集成选择模块
 
-要在您的主站中集成元素选择功能，需要：
+要在主站中集成元素选择功能，需要：
 
 ```javascript
 // 1. 引入选择器桥接模块
@@ -146,7 +148,7 @@ document.getElementById('cancel-button').addEventListener('click', () => {
   "tagName": "h1",                           // 元素标签名
   "id": "app-title",                         // 元素ID（如果存在）
   "classList": ["title", "main-title"],      // 元素类列表
-  "pageURL": "http://localhost:8080/example-page/index.html"  // 页面URL
+  "pageURL": "http://localhost:9000/main-site/example-page/index.html"  // 页面URL
 }
 ```
 

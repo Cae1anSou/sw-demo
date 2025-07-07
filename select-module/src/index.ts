@@ -1,4 +1,4 @@
 // 导出所有公共API
-export * from './utils';
-export * from './element-selector';
-export * from './iframe-bridge';
+export * from './utils.js';
+export * from './element-selector.js';
+export * from './iframe-bridge.js';

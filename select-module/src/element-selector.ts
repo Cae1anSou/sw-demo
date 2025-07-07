@@ -1,4 +1,4 @@
-import { getElementAtPoint, getElementInfo } from './utils';
+import { getElementAtPoint, getElementInfo } from './utils.js';
 
 /**
  * 最高层级常量，确保覆盖层和高亮层位于页面的最上层

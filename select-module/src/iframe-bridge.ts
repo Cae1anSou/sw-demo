@@ -1,5 +1,5 @@
-import { ElementSelector } from './element-selector';
-import { getElementInfo } from './utils';
+import { ElementSelector } from './element-selector.js';
+import { getElementInfo } from './utils.js';
 
 // 定义消息类型常量
 export const MESSAGE_TYPES = {
