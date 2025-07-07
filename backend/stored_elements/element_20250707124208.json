@@ -1,0 +1,16 @@
+{
+  "selector": "/html[1]/body[1]/div[1]/div[1]/main[1]/div[3]/div[2]/div[1]",
+  "outerHTML": "<div class=\"item-image\" style=\"background-color: rgb(53, 73, 94);\"><span class=\"item-category\">技术</span></div>",
+  "bbox": {
+    "x": 300.0,
+    "y": 123.07292175292969,
+    "width": 485.3333435058594,
+    "height": 160.0
+  },
+  "tagName": "div",
+  "id": null,
+  "classList": [
+    "item-image"
+  ],
+  "pageURL": "http://localhost:9000/example-page/index.html"
+}

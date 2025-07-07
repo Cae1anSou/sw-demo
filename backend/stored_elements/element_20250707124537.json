@@ -1,0 +1,16 @@
+{
+  "selector": "/html[1]/body[1]/div[1]/div[1]/aside[1]",
+  "outerHTML": "<aside class=\"filters\"><h2>过滤选项</h2><div class=\"filter-group\"><h3>分类</h3><label class=\"checkbox\"><input type=\"checkbox\"><span>技术</span></label><label class=\"checkbox\"><input type=\"checkbox\"><span>设计</span></label><label class=\"checkbox\"><input type=\"checkbox\"><span>管理</span></label></div><div class=\"filter-group\"><h3>难度</h3><div class=\"difficulty-slider\"><input type=\"range\" min=\"1\" max=\"5\"><span>1</span></div></div><button class=\"reset-button\">重置过滤器</button></aside>",
+  "bbox": {
+    "x": 16.0,
+    "y": -1996.0,
+    "width": 250.0,
+    "height": 3321.916748046875
+  },
+  "tagName": "aside",
+  "id": null,
+  "classList": [
+    "filters"
+  ],
+  "pageURL": "http://localhost:9000/example-page/index.html"
+}

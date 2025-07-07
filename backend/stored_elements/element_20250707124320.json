@@ -1,0 +1,16 @@
+{
+  "selector": "/html[1]/body[1]/div[1]/div[1]/main[1]/div[3]/div[5]/div[1]/span[1]",
+  "outerHTML": "<span class=\"item-category\">设计</span>",
+  "bbox": {
+    "x": 314.0,
+    "y": 210.2916717529297,
+    "width": 51.208335876464844,
+    "height": 28.40625
+  },
+  "tagName": "span",
+  "id": null,
+  "classList": [
+    "item-category"
+  ],
+  "pageURL": "http://localhost:9000/example-page/index.html"
+}
