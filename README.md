@@ -1,8 +1,8 @@
-# 元素选择模块
+# 元素选择模块 (sw-demo)
 
-这是一个基于TypeScript的元素选择模块，设计用于AI教学平台。该模块允许用户在教学网站内的嵌入式iframe中选择HTML元素，然后将选中元素的详细信息通过JSON格式发送到FastAPI后端进行处理。
+一个前端 + FastAPI 后端的小型 Demo，用来在嵌入式 iframe 中选取页面元素并把信息回传给服务端，配合内部 AI 教学平台原型使用。
 
-## 项目结构
+## 目录结构
 
 ```
 sw-demo/
@@ -36,175 +36,95 @@ sw-demo/
 
 ## 快速开始
 
-### 1. 安装依赖
-
 ```bash
-# 安装前端依赖（构建完毕，不改TS代码的话这步可跳过）
-cd select-module
-npm install
+# 1. 安装依赖
+cd select-module && npm i          # 可选：仅在需要重新构建时
+cd ../backend && pip install -r requirements.txt
 
-# 安装后端依赖（这个没法跳过，git上传的时候忽略了这个）
-cd ../backend
-pip install -r requirements.txt
+# 2. 构建前端（可选）
+cd ../select-module && npm run build
+
+# 3. 启动服务
+uvicorn backend.main:app --reload --port 8000   # 端口 8000 已写死
+python -m http.server 9000                      # 项目根目录启动静态文件
+# 访问 http://localhost:9000/main-site/demo-002/
 ```
 
-### 2. 构建选择模块（构建完毕，可跳过）
+## 集成示例
 
-```bash
-cd select-module
-npm run build
-```
+主站 JS
 
-### 3. 启动FastAPI后端
-
-```bash
-cd backend
-uvicorn main:app --reload --port 8000  # 必须是8000，因为我的示例里面写死了
-```
-
-### 4. 运行演示页面
-
-由于这是一个演示项目，您可以使用任何简单的HTTP服务器来提供静态文件：
-
-```bash
-# 在项目根目录（sw-demo）启动
-python -m http.server 9000
-```
-
-然后在浏览器中访问 `http://localhost:9000/main-site/demo-002/`
-
-## 使用说明
-
-### 1. 在主站中集成选择模块
-
-要在主站中集成元素选择功能，需要：
-
-```javascript
-// 1. 引入选择器桥接模块
+```ts
 import { createSelectorBridge } from 'select-module';
 
-// 2. 创建桥接实例
-const selectorBridge = createSelectorBridge({
+const bridge = createSelectorBridge({
   iframeSelector: '#preview-iframe',
-  onElementSelected: (elementInfo) => {
-    // 处理选中的元素信息
-    console.log('选中元素:', elementInfo);
-    
-    // 发送到后端
+  onElementSelected(info) {
     fetch('http://localhost:8000/api/element', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(elementInfo)
+      body: JSON.stringify(info)
     });
   }
 });
 
-// 3. 添加启动选择的按钮
-document.getElementById('select-button').addEventListener('click', () => {
-  selectorBridge.startSelection();
-});
-
-// 4. 添加取消选择的按钮
-document.getElementById('cancel-button').addEventListener('click', () => {
-  selectorBridge.stopSelection();
-});
+document.getElementById('select-btn')?.addEventListener('click', () => bridge.startSelection());
+document.getElementById('cancel-btn')?.addEventListener('click', () => bridge.stopSelection());
 ```
 
-### 2. 在iframe页面中集成选择模块
-
-在您的iframe页面中，需要：
+iframe 页面
 
 ```html
-<!-- 引入选择模块脚本 -->
 <script src="path/to/select-module/dist/index.js"></script>
-
-<!-- 初始化iframe选择器 -->
 <script>
   window.SWSelector.initIframeSelector();
 </script>
 ```
 
-### 3. FastAPI后端集成
+## Backend API
 
-后端API提供以下端点：
-
-- `POST /api/element`：接收选中元素的详细信息
-- `GET /api/elements`：获取所有保存的元素信息
-- `GET /api/element/{element_id}`：获取指定元素的详细信息
+- POST `/api/element` 上报元素
+- GET  `/api/elements` 获取全部元素
+- GET  `/api/element/{id}` 获取单个元素
 
 ## 数据格式
 
-### 元素信息JSON结构
-
 ```json
 {
-  "selector": "/html/body/div/nav/div[1]/h1",  // 元素的XPath
-  "outerHTML": "<h1>Vue 示例应用</h1>",        // 元素的HTML代码
-  "bbox": {                                   // 元素的边界框
-    "x": 120,
-    "y": 50,
-    "width": 180,
-    "height": 40
-  },
-  "tagName": "h1",                           // 元素标签名
-  "id": "app-title",                         // 元素ID（如果存在）
-  "classList": ["title", "main-title"],      // 元素类列表
-  "pageURL": "http://localhost:9000/main-site/example-page/index.html"  // 页面URL
+  "selector": "/html/body/div/nav/div[1]/h1",
+  "outerHTML": "<h1>Vue 示例应用</h1>",
+  "bbox": { "x": 120, "y": 50, "width": 180, "height": 40 },
+  "tagName": "h1",
+  "id": "app-title",
+  "classList": ["title", "main-title"],
+  "pageURL": "http://localhost:9000/main-site/example-page/index.html"
 }
 ```
 
-### 响应格式
+## 消息协议
 
-```json
-{
-  "status": "success",
-  "message": "元素信息已成功接收",
-  "element_id": "element_20250707120145",
-  "next_steps": [
-    "AI正在分析元素...",
-    "准备生成相关教学内容",
-    "可以继续选择其他元素，或进入下一步学习"
-  ]
-}
-```
+| 消息 | 方向 | 描述 |
+| ---- | ---- | ---- |
+| `SW_SELECT_START` | 主站 → iframe | 开始选择 |
+| `SW_SELECT_STOP`  | 主站 → iframe | 结束选择 |
+| `SW_SELECT_CHOSEN`| iframe → 主站 | 返回元素信息 |
 
-## 通信协议
+## 原理概览
 
-主站和iframe之间使用以下消息类型进行通信：
+1. `ElementSelector` 在 iframe 内插入透明遮罩，监听鼠标事件并高亮元素。
+2. 选中后通过 `postMessage` 把元素信息发回主站，再由主站 POST 到后端。
+3. 后端保存 JSON，供 AI 模块后续消费。
 
-- `SW_SELECT_START`：主站通知iframe启动选择模式
-- `SW_SELECT_STOP`：主站通知iframe停止选择模式
-- `SW_SELECT_CHOSEN`：iframe通知主站已选中元素，并附带元素信息
+## TODO
 
-## 技术实现细节
+- 接入 LLM 生成教学内容  
+- 元素在组件树中的定位解释  
+- 更友好的视觉交互
 
-### ElementSelector类
-
-`ElementSelector`类创建一个全屏透明覆盖层来捕获鼠标事件：
-
-- 当鼠标悬停在元素上时，会创建一个高亮框
-- 点击元素后，触发选择回调并提供元素详细信息
-- 支持按ESC键取消选择
-
-### 元素定位
-
-使用`document.elementsFromPoint`获取鼠标位置下的所有元素，然后过滤出实际想要的目标元素。
-
-### XPath生成
-
-为每个元素生成唯一的XPath路径，以便在不同上下文中标识同一元素。
-
-## 下一步开发计划
-
-1. **AI集成**：连接到大语言模型，根据选中元素生成教学内容
-2. **元素关系分析**：分析元素在Vue组件层次中的位置和作用
-3. **交互式教学**：基于选中元素展示相关Vue概念和最佳实践
-4. **用户体验改进**：增强选择器的视觉反馈和交互体验
-
-## 贡献
-
-欢迎贡献！请随时提交问题或拉取请求。
-
-## 许可
+## License
 
 MIT
+
+---
+
+有问题随时群里 @我 🍻
